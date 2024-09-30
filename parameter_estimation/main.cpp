@@ -8,5 +8,6 @@ Eigen::MatrixXd pseudo_inverse(const Eigen::MatrixXd &A)
 
 int main()
 {
+    std::cout << "Hello, World!" << std::endl;
     return 0;
 }
