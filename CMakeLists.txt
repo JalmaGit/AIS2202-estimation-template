@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.29)
-project(AIS4104-assignments)
+cmake_minimum_required(VERSION 3.27)
+project(AIS2202-estimation-template)
 
 set(CMAKE_CXX_STANDARD 20)
 
