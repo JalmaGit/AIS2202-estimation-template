@@ -1,0 +1,8 @@
+x64-linux/
+x64-linux/include/
+x64-linux/include/rapidcsv.h
+x64-linux/share/
+x64-linux/share/rapidcsv/
+x64-linux/share/rapidcsv/copyright
+x64-linux/share/rapidcsv/vcpkg.spdx.json
+x64-linux/share/rapidcsv/vcpkg_abi_info.txt

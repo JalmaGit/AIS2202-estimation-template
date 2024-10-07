@@ -33,3 +33,7 @@ Makefile.*
 *.BASE*
 *_BASE_*
 *.autosave
+
+CMakePresets*
+CMakeUser*
+vcpkg-manifest*
