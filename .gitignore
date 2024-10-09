@@ -37,3 +37,4 @@ Makefile.*
 CMakePresets*
 CMakeUser*
 vcpkg-manifest*
+vcpkg*
