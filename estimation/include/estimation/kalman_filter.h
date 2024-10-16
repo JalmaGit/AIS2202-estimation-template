@@ -4,11 +4,15 @@
 #include <Eigen/Dense>
 
 namespace estimation {
-class kalman_filter
-{
+class kalman_filter {
 public:
-    kalman_filter();
+  kalman_filter();
+
+private:
+  void calculate_variance();
+  float m_var_imu;
+  float m_var_fts;
 };
-}
+} // namespace estimation
 
 #endif

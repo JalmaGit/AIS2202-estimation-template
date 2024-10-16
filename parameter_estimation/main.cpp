@@ -1,17 +1,16 @@
-#include <rapidcsv.h>
+#include "Estimator.hpp"
 #include <Eigen/Dense>
 #include <iostream>
-#include "Estimator.hpp"
+#include <rapidcsv.h>
 
 int main() {
-    rapidcsv::Document data("data/0-calibration_fts-accel.csv");
+  rapidcsv::Document data("data/0-calibration_fts-accel.csv");
 
-    Estimator estimator(data);
-    std::cout << estimator.get_m() << std::endl;
-    std::cout << estimator.get_r() << std::endl;
-    std::cout << estimator.get_force_bias().transpose() << std::endl;
-    std::cout << estimator.get_torque_bias().transpose() << std::endl;
-    std::cout << estimator.get_accel_bias().transpose() << std::endl;
-
-    return 0;
+  Estimator estimator(data);
+  std::cout << estimator.get_m() << std::endl;
+  std::cout << estimator.get_r() << std::endl;
+  std::cout << estimator.get_force_bias().transpose() << std::endl;
+  std::cout << estimator.get_torque_bias().transpose() << std::endl;
+  std::cout << estimator.get_accel_bias().transpose() << std::endl;
+  return 0;
 }
