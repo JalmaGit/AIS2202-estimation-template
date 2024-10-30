@@ -1,4 +1,5 @@
 #include "Estimator.hpp"
+#include "Eigen/src/Core/Matrix.h"
 #include "util.hpp"
 Estimator::Estimator(rapidcsv::Document &data) {
   populate(data);
@@ -65,36 +66,51 @@ void Estimator::calculate_r() {
 }
 
 void Estimator::calculate_variance() {
-  Eigen::VectorXd f_x_values(m_force_all.rows() / 3),
-      f_y_values(m_force_all.rows() / 3), f_z_values(m_force_all.rows() / 3);
-  Eigen::VectorXd t_x_values(m_force_all.rows() / 3),
-      t_y_values(m_force_all.rows() / 3), t_z_values(m_force_all.rows() / 3);
-  Eigen::VectorXd a_x_values(m_force_all.rows() / 3),
-      a_y_values(m_force_all.rows() / 3), a_z_values(m_force_all.rows() / 3);
+  Eigen::MatrixXd f(3, m_force_all.rows() / 3);
+  Eigen::MatrixXd t(3, m_torque_all.rows() / 3);
+  Eigen::MatrixXd a(3, m_accel_all.rows() / 3);
 
   for (int i = 0; i < m_force_all.rows() / 3; i++) {
-    f_x_values(i) = m_force_all(3 * i, 0);
-    f_y_values(i) = m_force_all(3 * i + 1, 0);
-    f_z_values(i) = m_force_all(3 * i + 2, 0);
+    Eigen::Vector3d fi(m_force_all(3 * i, 0), m_force_all(3 * i + 1, 0),
+                       m_force_all(3 * i + 2, 0));
+    f.block<3, 1>(0, i) = fi;
 
-    t_x_values(i) = m_torque_all(3 * i, 0);
-    t_y_values(i) = m_torque_all(3 * i + 1, 0);
-    t_z_values(i) = m_torque_all(3 * i + 2, 0);
+    Eigen::Vector3d ti(m_torque_all(3 * i, 0), m_torque_all(3 * i + 1, 0),
+                       m_torque_all(3 * i + 2, 0));
+    t.block<3, 1>(0, i) = ti;
 
-    a_x_values(i) = m_accel_all(3 * i, 0);
-    a_y_values(i) = m_accel_all(3 * i + 1, 0);
-    a_z_values(i) = m_accel_all(3 * i + 2, 0);
+    Eigen::Vector3d ai(m_accel_all(3 * i, 0), m_accel_all(3 * i + 1, 0),
+                       m_accel_all(3 * i + 2, 0));
+    a.block<3, 1>(0, i) = ai;
   }
-  Eigen::Vector3d force_mean(f_x_values.mean(), f_y_values.mean(),
-                             f_z_values.mean());
-  Eigen::Vector3d torque_mean(t_x_values.mean(), t_y_values.mean(),
-                              t_z_values.mean());
-  Eigen::Vector3d accel_mean(a_x_values.mean(), a_y_values.mean(),
-                             a_z_values.mean());
+  Eigen::Vector3d force_mean = f.rowwise().mean();
+  Eigen::Vector3d torque_mean = t.rowwise().mean();
+  Eigen::Vector3d accel_mean = a.rowwise().mean();
 
-  std::cout << force_mean << std::endl;
-  std::cout << torque_mean << std::endl;
-  std::cout << accel_mean << std::endl;
+  Eigen::Vector3d fss(0, 0, 0);
+  for (int i = 0; i < f.cols(); i++) {
+    Eigen::Vector3d fidiff =
+        (f.block<3, 1>(0, i) - force_mean).array().square();
+    fss += fidiff;
+  }
+
+  Eigen::Vector3d tss(0, 0, 0);
+  for (int i = 0; i < t.cols(); i++) {
+    Eigen::Vector3d tidiff =
+        (f.block<3, 1>(0, i) - torque_mean).array().square();
+    tss += tidiff;
+  }
+
+  Eigen::Vector3d ass(0, 0, 0);
+  for (int i = 0; i < a.cols(); i++) {
+    Eigen::Vector3d aidiff =
+        (f.block<3, 1>(0, i) - accel_mean).array().square();
+    ass += aidiff;
+  }
+
+  m_force_variance = fss / f.cols();
+  m_torque_variance = tss / t.cols();
+  m_accel_variance = ass / a.cols();
 }
 
 float Estimator::get_m() { return m_m; }
