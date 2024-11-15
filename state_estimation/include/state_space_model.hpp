@@ -7,9 +7,9 @@
 
 #include <Eigen/Dense>
 
-class temp {
+class state_space_model {
     public:
-    temp(float m_hat, Eigen::VectorXd &r_hat);
+    state_space_model(float m_hat, Eigen::VectorXd &r_hat);
 
     private:
     static Eigen::Matrix3d skewSymmetric(const Eigen::Vector3d &v);
