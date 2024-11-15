@@ -14,6 +14,7 @@ namespace estimation {
 
         void prediction_update(Eigen::VectorXd &u_k);
         void correction_update(Eigen::VectorXd &z_k);
+        Eigen::VectorXd get_kalman_state();
 
     private:
         Eigen::MatrixXd m_A_k; //System Matrix
@@ -24,7 +25,7 @@ namespace estimation {
         Eigen::MatrixXd m_Q_k; //White Gaussian Process Noise Variance
         Eigen::MatrixXd m_I; //Identity Matrix, Must be the same size as A_k
 
-        Eigen::VectorXd m_x_hat_k;
+        Eigen::VectorXd m_x_hat_k; //Estimated Kalman State
     };
 } // namespace estimation
 

@@ -23,9 +23,12 @@ void kalman_filter::prediction_update(Eigen::VectorXd &u_k){
     m_P_k = m_A_k * m_P_k * m_A_k.transpose() + m_Q_k;
 }
 
-
 void kalman_filter::correction_update(Eigen::VectorXd &z_k){
     Eigen::MatrixXd K = m_P_k * m_H_k.transpose()*(m_H_k*m_P_k*m_H_k.transpose() + m_R_k).inverse();
     m_x_hat_k = m_x_hat_k + K*(z_k - m_H_k*m_x_hat_k);
     m_P_k = (m_I - K*m_H_k)*m_P_k;
+}
+
+Eigen::VectorXd kalman_filter::get_kalman_state(){
+    return m_x_hat_k;
 }
