@@ -4,9 +4,9 @@
 #include <Eigen/Dense>
 
 namespace estimation {
-    class kalman_filter {
+    class Kalman_filter {
     public:
-        explicit kalman_filter(const Eigen::MatrixXd &A_k, const Eigen::MatrixXd &B_k,
+        explicit Kalman_filter(const Eigen::MatrixXd &A_k, const Eigen::MatrixXd &B_k,
                                const Eigen::MatrixXd& $H_k, const Eigen::MatrixXd &P_k,
                                const Eigen::MatrixXd &R_k, const Eigen::MatrixXd &Q_k);
 
