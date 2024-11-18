@@ -12,6 +12,10 @@ public:
   Eigen::Vector3d get_torque_bias();
   Eigen::Vector3d get_accel_bias();
 
+  Eigen::Vector3d get_force_variance();
+  Eigen::Vector3d get_torque_variance();
+  Eigen::Vector3d get_accel_variance();
+
 private:
   void populate(rapidcsv::Document &data);
   void calculate_m();

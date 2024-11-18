@@ -97,14 +97,14 @@ void Estimator::calculate_variance() {
   Eigen::Vector3d tss(0, 0, 0);
   for (int i = 0; i < t.cols(); i++) {
     Eigen::Vector3d tidiff =
-        (f.block<3, 1>(0, i) - torque_mean).array().square();
+        (t.block<3, 1>(0, i) - torque_mean).array().square();
     tss += tidiff;
   }
 
   Eigen::Vector3d ass(0, 0, 0);
   for (int i = 0; i < a.cols(); i++) {
     Eigen::Vector3d aidiff =
-        (f.block<3, 1>(0, i) - accel_mean).array().square();
+        (a.block<3, 1>(0, i) - accel_mean).array().square();
     ass += aidiff;
   }
 
@@ -116,3 +116,6 @@ void Estimator::calculate_variance() {
 float Estimator::get_m() { return m_m; }
 
 Eigen::VectorXd Estimator::get_r() { return m_r; }
+Eigen::Vector3d Estimator::get_force_variance() { return m_force_variance; }
+Eigen::Vector3d Estimator::get_torque_variance() { return m_torque_variance; }
+Eigen::Vector3d Estimator::get_accel_variance() { return m_accel_variance; }
