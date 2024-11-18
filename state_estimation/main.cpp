@@ -1,4 +1,4 @@
-#include "kalman_filter.hpp"
+#include "Kalman_filter.hpp"
 
 #include <Eigen/Dense>
 #include <iostream>
@@ -40,8 +40,6 @@ Eigen::MatrixXd csv_to_mat(rapidcsv::Document doc) {
   return data;
 }
 
-double g_to_mps2(double g) { return g * 9.81; }
-Eigen::VectorXd g_to_mps2(Eigen::VectorXd g) { return g * 9.81; }
 int main() {
 
   rapidcsv::Document stdy_accel_data("data/0-steady-state_accel.csv");
@@ -58,9 +56,9 @@ int main() {
                              calculate_variance(force_torque.col(4)),
                              calculate_variance(force_torque.col(5)));
 
-  Eigen::RowVector3d sigma_a(calculate_variance(g_to_mps2(accel.col(0))),
-                             calculate_variance(g_to_mps2(accel.col(1))),
-                             calculate_variance(g_to_mps2(accel.col(2))));
+  Eigen::RowVector3d sigma_a(calculate_variance(accel.col(0) * 9.81),
+                             calculate_variance(accel.col(1) * 9.81),
+                             calculate_variance(accel.col(2) * 9.81));
 
   std::cout << "[ " << sigma_f * 250 << " ]" << std::endl;
   std::cout << "[ " << sigma_t * 5000 << " ]" << std::endl;

@@ -1,6 +1,6 @@
 set(sources
-        "kalman_filter.cpp"
-        "state_space_model.cpp"
+        "Kalman_filter.cpp"
+				"Fusion.cpp"
 )
 
 add_library(estimation ${sources})
