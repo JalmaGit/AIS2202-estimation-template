@@ -1,19 +1,9 @@
-#include "kalman_filter.hpp"
+#include "Kalman_filter.hpp"
 
 #include <Eigen/Dense>
 #include <iostream>
 
-// Function to create a skew-symmetric matrix from a Vector3d using Eigen's cross
-Eigen::Matrix3d skewSymmetricUsingCross(const Eigen::Vector3d &v) {
-    // The skew-symmetric matrix can be constructed as the mapping for cross product
-    Eigen::Matrix3d skewMat = Eigen::Matrix3d::Zero();
-    skewMat.col(0) = v.cross(Eigen::Vector3d::UnitX());
-    skewMat.col(1) = v.cross(Eigen::Vector3d::UnitY());
-    skewMat.col(2) = v.cross(Eigen::Vector3d::UnitZ());
-    return skewMat;
-}
-
-int main() {
+void testing_eigen() {
     Eigen::MatrixXd A = Eigen::MatrixXd::Zero(3, 3);
 
     Eigen::Vector3d v(1.0, 2.0, 3.0);
@@ -37,6 +27,20 @@ int main() {
 
     std::cout << "Vector:\n" << v << "\n\n";
     std::cout << "Skew-symmetric matrix using cross:\n" << A << "\n";
+}
+
+int main() {
+
+    Eigen::MatrixXd A = Eigen::MatrixXd::Zero(9, 9);
+    A << Eigen::Matrix3d::Identity(), Eigen::MatrixXd::Zero(3, 6),
+    Eigen::MatrixXd::Zero(3,3), 3*Eigen::MatrixXd::Identity(3, 3), Eigen::MatrixXd::Zero(3,3),
+    Eigen::MatrixXd::Zero(3, 6), Eigen::MatrixXd::Identity(3, 3);
+
+    Eigen::Vector3d B = Eigen::Vector3d(3.0, 4.0, 0.0);
+
+    auto abs = B.norm();
+
+    std::cout << "Skew-symmetric matrix using cross:\n" << A << std::endl;
 
     return 0;
 }

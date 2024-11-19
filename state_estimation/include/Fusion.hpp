@@ -1,9 +1,5 @@
-//
-// Created by jalma on 11/15/24.
-//
-
-#ifndef TEMP_HPP
-#define TEMP_HPP
+#ifndef FUSION_HPP
+#define FUSION_HPP
 
 #include <Eigen/Dense>
 
@@ -16,21 +12,27 @@ class Fusion {
 
 
     private:
-        static Eigen::Matrix3d skewSymmetric(const Eigen::Vector3d &v);
         void Calc_Q(float d_t);
+
+        static Eigen::Matrix3d skewSymmetric(const Eigen::Vector3d &v);
+
 
         Eigen::MatrixXd m_identity;
         Eigen::MatrixXd m_A_k;
         Eigen::MatrixXd m_B_k;
         Eigen::MatrixXd m_Q_k;
 
+        Eigen::MatrixXd m_H_f;
+        Eigen::MatrixXd m_H_a;
+
+        Eigen::MatrixXd m_R_f;
+        Eigen::MatrixXd m_R_a;
+
         Eigen::Vector3d m_force_var;
         Eigen::Vector3d m_torque_var;
         Eigen::Vector3d m_accel_var;
 
-
         Eigen::Vector3d m_r_hat;
-
         float m_m_hat;
 
         float m_s_a;
@@ -41,4 +43,4 @@ class Fusion {
 
 
 
-#endif //TEMP_HPP
+#endif //FUSION_HPP
