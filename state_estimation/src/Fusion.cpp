@@ -5,7 +5,6 @@ Fusion::Fusion(float m_hat, Eigen::VectorXd &r_hat, Eigen::VectorXd &force_var, 
     m_r_hat = r_hat;
     m_m_hat = m_hat;
 
-    //TODO: Check that all Matrixes are set correctly
     m_identity = Eigen::MatrixXd::Identity(9, 9);
     m_A_k = Eigen::MatrixXd::Identity(9, 9);
     m_B_k = Eigen::MatrixXd::Zero(9, 3);
@@ -34,10 +33,12 @@ void Fusion::init(float s_a, float s_t, float s_f, float sigma_k) {
     m_s_f = s_f;
     m_sigma_k = sigma_k;
 
-    //TODO: Calculate m_R_a and m_R_f, a.k.a do diagonal.
     m_R_a = Eigen::MatrixXd::Zero(6, 6);
+    m_R_a << m_force_var.diagonal()*s_f, Eigen::Matrix3d::Identity(),
+    Eigen::Matrix3d::Identity(), m_torque_var.diagonal()*s_t;
 
-    m_R_f = Eigen::MatrixXd::Zero(6, 3);
+    m_R_f = Eigen::MatrixXd::Zero(3, 3);
+    m_R_f << m_accel_var.diagonal()*s_a;
 }
 
 void Fusion::update(float d_t) {
