@@ -12,6 +12,8 @@ namespace estimation {
 
         void init(Eigen::VectorXd &x_hat_k_1, Eigen::MatrixXd &P_k_1);
 
+        void update(Eigen::MatrixXd &H_k, float d_t);
+
         void prediction_update(Eigen::VectorXd &u_k);
         void correction_update(Eigen::VectorXd &z_k);
         Eigen::VectorXd get_kalman_state();
@@ -26,6 +28,8 @@ namespace estimation {
         Eigen::MatrixXd m_I; //Identity Matrix, Must be the same size as A_k
 
         Eigen::VectorXd m_x_hat_k; //Estimated Kalman State
+
+        float m_dt;
     };
 } // namespace estimation
 

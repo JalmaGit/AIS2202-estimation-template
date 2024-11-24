@@ -17,9 +17,15 @@ void Kalman_filter::init(Eigen::VectorXd &x_hat_k_1, Eigen::MatrixXd &P_k_1) {
   m_P_k = P_k_1;
 }
 
+void Kalman_filter::update(Eigen::MatrixXd& H_k, float d_t)
+{
+  m_H_k = H_k;
+  m_dt = d_t;
+}
+
 void Kalman_filter::prediction_update(Eigen::VectorXd &u_k) {
   m_x_hat_k = m_A_k * m_x_hat_k + m_B_k * u_k;
-  m_P_k = m_A_k * m_P_k * m_A_k.transpose() + m_Q_k;
+  m_P_k = m_A_k * m_P_k * m_A_k.transpose() + m_Q_k * m_dt;
 }
 
 void Kalman_filter::correction_update(Eigen::VectorXd &z_k) {
