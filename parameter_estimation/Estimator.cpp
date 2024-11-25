@@ -36,19 +36,26 @@ void Estimator::populate(rapidcsv::Document &data) {
 
 void Estimator::calculate_biases() {
   Eigen::VectorXd force_sum = Eigen::VectorXd::Zero(3);
-  Eigen::VectorXd torque_sum = Eigen::VectorXd::Zero(3);
   Eigen::VectorXd accel_sum = Eigen::VectorXd::Zero(3);
 
   int num_rows = m_force_all.size() / 3;
 
   for (int i = 0; i < num_rows; i++) {
     force_sum += m_force_all.segment<3>(i * 3);
-    torque_sum += m_torque_all.segment<3>(i * 3);
     accel_sum += m_gravity_all.segment<3>(i * 3);
   }
+  double tx = 0;
+  double ty = 0;
+  double tz = 0;
+  for (int i = 0; i < 8; i++) {
+    tx += m_torque_all[i*3];
+    ty += m_torque_all[i*3 + 8*3 + 1];
+    tz += m_torque_all[i*3 + 2*8*3 + 2];
+  }
+  Eigen::Vector3d torque_sum(tx,ty,tz);
 
   m_force_bias = force_sum / num_rows;
-  m_torque_bias = torque_sum / num_rows;
+  m_torque_bias = torque_sum / 8;
   m_accel_bias = accel_sum / num_rows;
 }
 Eigen::Vector3d Estimator::get_force_bias() { return m_force_bias; }
