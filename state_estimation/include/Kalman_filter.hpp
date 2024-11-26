@@ -12,7 +12,7 @@ namespace estimation {
 
         void init(Eigen::VectorXd &x_hat_k_1, Eigen::MatrixXd &P_k_1);
 
-        void update(Eigen::MatrixXd &H_k, float d_t);
+        void update(Eigen::MatrixXd& H_k, Eigen::MatrixXd& R_k, double d_t);
 
         void prediction_update(Eigen::VectorXd &u_k);
         void correction_update(Eigen::VectorXd &z_k);
@@ -29,7 +29,7 @@ namespace estimation {
 
         Eigen::VectorXd m_x_hat_k; //Estimated Kalman State
 
-        float m_dt;
+        double m_dt;
     };
 } // namespace estimation
 

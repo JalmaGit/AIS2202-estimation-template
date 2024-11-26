@@ -4,21 +4,30 @@
 #include <Eigen/Dense>
 #include <optional>
 #include "Kalman_filter.hpp"
+#include <rapidcsv.h>
+
 
 class Fusion {
     public:
-        Fusion(float m_hat, Eigen::VectorXd &r_hat, Eigen::VectorXd &force_var, Eigen::VectorXd &torque_var, Eigen::VectorXd &accel_var, Eigen::VectorXd &V_b_hat);
+        Fusion(double m_hat, Eigen::VectorXd &r_hat, Eigen::VectorXd &force_var, Eigen::VectorXd &torque_var, Eigen::VectorXd &accel_var, Eigen::VectorXd &V_b_hat);
 
-        void init(float s_a, float s_t, float s_f, float sigma_k);
-        void update(float d_t, Eigen::VectorXd &V_s, Eigen::Vector3d &a, Eigen::Vector3d &G_w, Eigen::Matrix3d &R_ws);
+        void load_data_sets(std::string accel_file, std::string wrench_file, std::string rotation_file);
+        void init(double s_a, double s_t, double s_f, double sigma_k);
+        void run();
 
-        void load_data_sets();
+
 
     private:
-
+        Eigen::MatrixXd diagonal_matrix(const Eigen::Vector3d &v);
         static Eigen::Matrix3d skewSymmetric(const Eigen::Vector3d &v);
+        Eigen::MatrixXd csv_to_mat(rapidcsv::Document &doc);
+        double calc_freq(const Eigen::MatrixXd &data);
 
         std::optional<estimation::Kalman_filter> m_kalman_filter;
+
+        Eigen::MatrixXd m_data_accel;
+        Eigen::MatrixXd m_data_wrench;
+        Eigen::MatrixXd m_data_rotation;
 
         Eigen::MatrixXd m_identity;
         Eigen::MatrixXd m_A_k;
@@ -42,19 +51,16 @@ class Fusion {
         Eigen::Vector3d m_r_hat;
 
         Eigen::Vector3d m_g_s;
+        Eigen::Vector3d m_g_w{0,0,9.81};
 
-        float comb_avg_freq{};
+        double comb_avg_freq{};
 
-        float m_f_a{};
-        float m_f_r{};
-        float m_f_f{};
+        double m_m_hat;
 
-        float m_m_hat;
-
-        float m_s_a{};
-        float m_s_t{};
-        float m_s_f{};
-        float m_sigma_k{};
+        double m_s_a{};
+        double m_s_t{};
+        double m_s_f{};
+        double m_sigma_k{};
 };
 
 

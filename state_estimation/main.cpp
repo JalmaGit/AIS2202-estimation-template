@@ -1,21 +1,11 @@
+#include <Fusion.hpp>
+
 #include "Kalman_filter.hpp"
 
 #include <Eigen/Dense>
 #include <iostream>
 #include <rapidcsv.h>
 #include <vector>
-
-// Function to create a skew-symmetric matrix from a Vector3d using Eigen's
-// cross
-Eigen::Matrix3d skewSymmetricUsingCross(const Eigen::Vector3d &v) {
-  // The skew-symmetric matrix can be constructed as the mapping for cross
-  // product
-  Eigen::Matrix3d skewMat = Eigen::Matrix3d::Zero();
-  skewMat.col(0) = v.cross(Eigen::Vector3d::UnitX());
-  skewMat.col(1) = v.cross(Eigen::Vector3d::UnitY());
-  skewMat.col(2) = v.cross(Eigen::Vector3d::UnitZ());
-  return skewMat;
-}
 
 double calculate_variance(Eigen::VectorXd data) {
   double mean = data.mean();
@@ -48,40 +38,41 @@ int main() {
   Eigen::MatrixXd force_torque = csv_to_mat(stdy_wrench_data);
   Eigen::MatrixXd accel = csv_to_mat(stdy_accel_data);
 
-  Eigen::RowVector3d sigma_f(calculate_variance(force_torque.col(0)),
+  Eigen::VectorXd var_f(3);
+
+  var_f << calculate_variance(force_torque.col(0)),
                              calculate_variance(force_torque.col(1)),
-                             calculate_variance(force_torque.col(2)));
+                             calculate_variance(force_torque.col(2));
 
-  Eigen::RowVector3d sigma_t(calculate_variance(force_torque.col(3)),
+  Eigen::VectorXd var_t(3);
+  var_t << calculate_variance(force_torque.col(3)),
                              calculate_variance(force_torque.col(4)),
-                             calculate_variance(force_torque.col(5)));
+                             calculate_variance(force_torque.col(5));
 
-  Eigen::RowVector3d sigma_a(calculate_variance(accel.col(0) * 9.81),
+  Eigen::VectorXd var_a(3);
+
+  var_a << calculate_variance(accel.col(0) * 9.81),
                              calculate_variance(accel.col(1) * 9.81),
-                             calculate_variance(accel.col(2) * 9.81));
+                             calculate_variance(accel.col(2) * 9.81);
 
-  std::cout << "[ " << sigma_f * 250 << " ]" << std::endl;
-  std::cout << "[ " << sigma_t * 5000 << " ]" << std::endl;
-  std::cout << "[ " << sigma_a * 100 << " ]" << std::endl;
-  Eigen::MatrixXd A = Eigen::MatrixXd::Zero(3, 3);
+  //std::cout << "[ " << var_f * 250 << " ]" << std::endl;
+  //std::cout << "[ " << var_t * 5000 << " ]" << std::endl;
+  //std::cout << "[ " << var_a * 100 << " ]" << std::endl;
 
-  Eigen::Vector3d v(1.0, 2.0, 3.0);
+  double m_hat = 0.932296;
+  Eigen::VectorXd r_hat(3);
+  Eigen::VectorXd V_b_hat(6);
 
-  A << 1.0, 10.0, 100.0, 1.0, 10.0, 100.0, 1.0, 10.0, 100.0;
+  r_hat << 0.000279925, 5.43937e-05,0.0438988;
+  V_b_hat << 9.07633, -1.01814,  9.98482, 0.432449, -0.692162, -0.156746;
 
-  Eigen::MatrixXd B = Eigen::MatrixXd::Zero(3, 3);
+  std::cout << "Running Fusion" << std::endl;
+  Fusion fusion{m_hat, r_hat, var_f, var_t, var_a,V_b_hat};
+  fusion.load_data_sets("data/1-baseline_accel.csv","data/1-baseline_wrench.csv", "data/1-baseline_orientations.csv");
+  fusion.init(100,5000,250, 0.5);
+  fusion.run();
 
-  B << 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0;
 
-  Eigen::MatrixXd I = Eigen::MatrixXd::Identity(A.rows(), A.cols());
-
-  I.setIdentity();
-
-  A = A * B;
-  A = A + B;
-
-  std::cout << "Vector:\n" << v << "\n\n";
-  std::cout << "Skew-symmetric matrix using cross:\n" << A << "\n";
 
   return 0;
 }

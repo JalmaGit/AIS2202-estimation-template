@@ -17,10 +17,11 @@ void Kalman_filter::init(Eigen::VectorXd &x_hat_k_1, Eigen::MatrixXd &P_k_1) {
   m_P_k = P_k_1;
 }
 
-void Kalman_filter::update(Eigen::MatrixXd& H_k, float d_t)
+void Kalman_filter::update(Eigen::MatrixXd& H_k, Eigen::MatrixXd& R_k, double d_t)
 {
   m_H_k = H_k;
   m_dt = d_t;
+  m_R_k = R_k;
 }
 
 void Kalman_filter::prediction_update(Eigen::VectorXd &u_k) {
