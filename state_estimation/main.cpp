@@ -51,9 +51,9 @@ int main() {
 
   Eigen::VectorXd var_a(3);
 
-  var_a << calculate_variance(accel.col(0) * 9.81),
-                             calculate_variance(accel.col(1) * 9.81),
-                             calculate_variance(accel.col(2) * 9.81);
+  var_a << calculate_variance(accel.col(1) * 9.81),
+                             calculate_variance(accel.col(2) * 9.81),
+                             calculate_variance(accel.col(0) * 9.81);
 
   //std::cout << "[ " << var_f * 250 << " ]" << std::endl;
   //std::cout << "[ " << var_t * 5000 << " ]" << std::endl;
@@ -69,7 +69,8 @@ int main() {
   std::cout << "Running Fusion" << std::endl;
   Fusion fusion{m_hat, r_hat, var_f, var_t, var_a,V_b_hat};
   fusion.load_data_sets("data/1-baseline_accel.csv","data/1-baseline_wrench.csv", "data/1-baseline_orientations.csv");
-  fusion.init(100,5000,250, 0.5);
+  fusion.init(100,5000  ,250, 0.5);
+  fusion.constants_verify();
   fusion.run();
 
 

@@ -1,4 +1,5 @@
 #include "Kalman_filter.hpp"
+#include <iostream>
 
 using namespace estimation;
 
@@ -26,14 +27,19 @@ void Kalman_filter::update(Eigen::MatrixXd& H_k, Eigen::MatrixXd& R_k, double d_
 
 void Kalman_filter::prediction_update(Eigen::VectorXd &u_k) {
   m_x_hat_k = m_A_k * m_x_hat_k + m_B_k * u_k;
+  std::cout << "m_x_hat_k_1: " << m_x_hat_k << std::endl;
   m_P_k = m_A_k * m_P_k * m_A_k.transpose() + m_Q_k * m_dt;
+  std::cout << "m_P_k_1: " << m_P_k << std::endl;
 }
 
 void Kalman_filter::correction_update(Eigen::VectorXd &z_k) {
   Eigen::MatrixXd K = m_P_k * m_H_k.transpose() *
                       (m_H_k * m_P_k * m_H_k.transpose() + m_R_k).inverse();
+  std::cout << "Kalman Gain: " << K << std::endl;
   m_x_hat_k = m_x_hat_k + K * (z_k - m_H_k * m_x_hat_k);
+  std::cout << "m_x_hat_k_2: " << m_x_hat_k << std::endl;
   m_P_k = (m_I - K * m_H_k) * m_P_k;
+  std::cout << "m_P_k_2: " << m_P_k << std::endl;
 }
 
 Eigen::VectorXd Kalman_filter::get_kalman_state() { return m_x_hat_k; }

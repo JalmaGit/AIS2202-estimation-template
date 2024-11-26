@@ -13,6 +13,7 @@ class Fusion {
 
         void load_data_sets(std::string accel_file, std::string wrench_file, std::string rotation_file);
         void init(double s_a, double s_t, double s_f, double sigma_k);
+        void constants_verify();
         void run();
 
 
@@ -46,7 +47,6 @@ class Fusion {
         Eigen::Vector3d m_accel_var;
 
         Eigen::VectorXd m_V_b_hat;
-        Eigen::VectorXd m_x;
 
         Eigen::Vector3d m_r_hat;
 
