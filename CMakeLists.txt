@@ -6,3 +6,4 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(parameter_estimation)
 add_subdirectory(state_estimation)
+add_subdirectory(state_estimation_v2)
