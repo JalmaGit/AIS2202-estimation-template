@@ -69,7 +69,7 @@ int main() {
   std::cout << "Running Fusion" << std::endl;
   Fusion fusion{m_hat, r_hat, var_f, var_t, var_a,V_b_hat};
   fusion.load_data_sets("data/1-baseline_accel.csv","data/1-baseline_wrench.csv", "data/1-baseline_orientations.csv");
-  fusion.init(100,5000  ,250, 0.5);
+  fusion.init(100,5000 ,250, 0.5);
   fusion.constants_verify();
   fusion.run();
 

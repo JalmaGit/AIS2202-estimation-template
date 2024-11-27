@@ -102,8 +102,8 @@ void Fusion::init(double s_a, double s_t, double s_f, double sigma_k) {
 
     std::cout<<"Initialising R Matrices..."<<std::endl;
     m_R_f = Eigen::MatrixXd::Zero(6, 6);
-    m_R_f << diagonal_matrix(m_force_var)*s_f, Eigen::Matrix3d::Identity(),
-    Eigen::Matrix3d::Identity(), diagonal_matrix(m_torque_var)*s_t;
+    m_R_f << diagonal_matrix(m_force_var)*s_f, Eigen::Matrix3d::Zero(),
+    Eigen::Matrix3d::Zero(), diagonal_matrix(m_torque_var)*s_t;
 
     m_R_a = Eigen::MatrixXd::Zero(3, 3);
     m_R_a << diagonal_matrix(m_accel_var)*s_a;
@@ -155,9 +155,9 @@ void Fusion::run() {
     std::cout << "Calc first u_k..." << std::endl;
     Eigen::VectorXd u_k = (R_ws*m_g_w)*comb_avg_freq;
     m_g_s = R_ws*m_g_w;
-    std::cout << u_k.transpose() << std::endl;
-    std::cout << R_ws.transpose() << std::endl;
-    std::cout << m_g_s.transpose() << std::endl;
+    std::cout << "u_k: " << u_k.transpose() << std::endl;
+    std::cout <<  "R_ws: \n"<<R_ws << std::endl;
+    std::cout << "m_g_s: " << m_g_s.transpose() << std::endl;
 
 
     std::cout << "Get First FTS Measurement data..." << std::endl;
@@ -180,13 +180,13 @@ void Fusion::run() {
 
     std::cout << "Rotating a..." << std::endl;
     Eigen::MatrixXd R_fa = Eigen::MatrixXd::Zero(3, 3);
-    //R_fa << 0, -1, 0,
-    //     0, 0, 1,
-    //    -1, 0, 0;
+    R_fa << 0, -1, 0,
+         0, 0, 1,
+        -1, 0, 0;
 
-    R_fa << 0, 0, -1,
-            -1, 0, 0,
-            0,1,0;
+    //R_fa << 0, 0, -1,
+    //        -1, 0, 0,
+     //       0,1,0;
 
     x << R_fa*a, V;
 
@@ -204,7 +204,7 @@ void Fusion::run() {
 
     std::vector<Eigen::VectorXd> x_hat;
     std::vector<double> time;
-
+    double last_time = 0.0;
     double t = 0.0;
     while (true)
     {
@@ -212,22 +212,25 @@ void Fusion::run() {
         // accel calc
         if (t == m_data_accel.row(a_idx)[0])
         {
-            double d_t = (m_data_accel.row(a_idx)[0]-m_data_accel.row(a_idx-1)[0])/1000000;
-            time.push_back((m_data_accel.row(a_idx)[0]/1000000));
+            double d_t = (t - last_time)/1000000;
+            last_time = t;
+            time.push_back(t/1000000);
 
             a << m_data_accel.row(a_idx)[1],m_data_accel.row(a_idx)[2],m_data_accel.row(a_idx)[3];
             x << R_fa*a, V;
 
             Eigen::VectorXd z_a = m_H_a * x;
+            std::cout << "a: " << (R_fa*a).transpose() << std::endl;
             std::cout << "z_a: " << z_a.transpose() << std::endl;
-            std::cout << "dt : " << d_t << std::endl;
-            std::cout << "Press Enter To Run " << std::endl;
-            std::cin.ignore();
+            //std::cout << "dt : " << d_t << std::endl;
+            //std::cout << "Press Egenter To Run in Accel" << std::endl;
+            //std::cin.ignore();
 
             m_kalman_filter->update(m_H_a, m_R_a, d_t);
             m_kalman_filter->prediction_update(u_k);
             m_kalman_filter->correction_update(z_a);
             x_hat.push_back(m_kalman_filter->get_kalman_state());
+            //std::cout << "x est: " << m_kalman_filter->get_kalman_state().row(5) << std::endl;
 
             a_idx++;
         }
@@ -235,8 +238,9 @@ void Fusion::run() {
         // Wrench Calc
         if(t == m_data_wrench.row(w_idx)[0])
         {
-            double d_t = (m_data_wrench.row(w_idx)[0]-m_data_wrench.row(w_idx-1)[0])/1000000;
-            time.push_back(m_data_wrench.row(w_idx)[0]/1000000);
+            double d_t = (t - last_time)/1000000;
+            last_time = t;
+            time.push_back(t/1000000);
 
             V_s << m_data_wrench.row(w_idx)[1], m_data_wrench.row(w_idx)[2], m_data_wrench.row(w_idx)[3]
             , m_data_wrench.row(w_idx)[4], m_data_wrench.row(w_idx)[5], m_data_wrench.row(w_idx)[6];
@@ -245,21 +249,24 @@ void Fusion::run() {
             x << R_fa*a, V;
 
             Eigen::VectorXd z_f = m_H_f * x;
-            std::cout << "z_f "<< z_f.transpose() << std::endl;
-            std::cout << "dt : " << d_t << std::endl;
-            std::cout << "Press Enter To Run " << std::endl;
-            std::cin.ignore();
+            //std::cout << "z_f "<< z_f.transpose() << std::endl;
+            //std::cout << "dt : " << d_t << std::endl;
+            //std::cout << "Press Enter To Run in FTS" << std::endl;
+            //std::cin.ignore();
 
             m_kalman_filter->update(m_H_f, m_R_f, d_t);
             m_kalman_filter->prediction_update(u_k);
             m_kalman_filter->correction_update(z_f);
             x_hat.push_back(m_kalman_filter->get_kalman_state());
+            //std::cout << "x est: " << m_kalman_filter->get_kalman_state().row(5) << std::endl;
 
             w_idx++;
         }
 
         if(t == m_data_rotation.row(r_idx)[0])
         {
+            double d_t = (t - last_time)/1000000;
+            last_time = t;
             R_ws << m_data_rotation.row(r_idx)[1],m_data_rotation.row(r_idx)[2],m_data_rotation.row(r_idx)[3],
             m_data_rotation.row(r_idx)[4], m_data_rotation.row(r_idx)[5], m_data_rotation.row(r_idx)[6],
             m_data_rotation.row(r_idx)[7], m_data_rotation.row(r_idx)[8], m_data_rotation.row(r_idx)[9];
@@ -287,10 +294,13 @@ void Fusion::run() {
 
     std::cout << "Writing Estimation Data To CSV File..." << std::endl;
 
-    for (int i = 0; i < x_hat[0].rows(); ++i) {
+    std::cout << x_hat[0](5) << std::endl;
+    std::cout << x_hat[3000](5) << std::endl;
 
+    for (int i = 0; i < x_hat[0].rows(); ++i) {
         std::vector<double> columnData;
         for (const auto& vec : x_hat) {
+
             columnData.push_back(vec(i));
         }
 

@@ -51,7 +51,7 @@ class Fusion {
         Eigen::Vector3d m_r_hat;
 
         Eigen::Vector3d m_g_s;
-        Eigen::Vector3d m_g_w{0,0,9.81};
+        Eigen::Vector3d m_g_w{0,0,-9.81};
 
         double comb_avg_freq{};
 
