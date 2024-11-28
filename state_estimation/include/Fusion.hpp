@@ -6,63 +6,46 @@
 #include "Kalman_filter.hpp"
 #include <rapidcsv.h>
 
+class Fusion
+{
+public:
+    Fusion(double m_est, const Eigen::VectorXd& r_est, const Eigen::VectorXd& var_a, const Eigen::VectorXd& var_f,
+              const Eigen::VectorXd& var_t, const Eigen::VectorXd& fts_bias, const Eigen::VectorXd& accel_bias);;
+    void init(double s_a, double s_f, double s_t, double sigma_k);;
+    void load_data_sets(const std::string& accel_file, const std::string& wrench_file, const std::string& rotation_file);
+    void run(const std::string& experiment);
 
-class Fusion {
-    public:
-        Fusion(double m_hat, Eigen::VectorXd &r_hat, Eigen::VectorXd &force_var, Eigen::VectorXd &torque_var, Eigen::VectorXd &accel_var, Eigen::VectorXd &V_b_hat);
+private:
+    static Eigen::Matrix3d skew_symmetric(const Eigen::Vector3d& vec);
+    static Eigen::MatrixXd diagonal_matrix(const Eigen::Vector3d& v);
+    static double calc_freq(const Eigen::MatrixXd& data);
+    static Eigen::MatrixXd csv_to_mat(rapidcsv::Document& doc);
+    static void csv_writer(const std::vector<double>& time, std::vector<Eigen::VectorXd> data, std::string filename, std::vector<std::string>& labels);
 
-        void load_data_sets(std::string accel_file, std::string wrench_file, std::string rotation_file);
-        void init(double s_a, double s_t, double s_f, double sigma_k);
-        void constants_verify();
-        void run();
+    void init_A();
+    void init_B(double m_est, const Eigen::Vector3d& r_est);
+    void init_P();
+    void init_Q(double m_est, const Eigen::Vector3d& r_est);
+    void init_Hf();
+    void init_Ha();
+    void init_Hc(double m_est, const Eigen::Vector3d& r_est);
 
+    void init_Rf(double s_f, double s_t);
+    void init_Ra(double s_a);
 
+    Eigen::MatrixXd A_, B_, P0_, Q_, Hf_, Ha_, Rf_, Ra_, Hc_;
+    Eigen::VectorXd fts_bias_, accel_bias_, var_a_, var_f_, var_t_;
+    double sigma_k_{}, fa_{}, ff_{}, fr_{};
 
-    private:
-        Eigen::MatrixXd diagonal_matrix(const Eigen::Vector3d &v);
-        static Eigen::Matrix3d skewSymmetric(const Eigen::Vector3d &v);
-        Eigen::MatrixXd csv_to_mat(rapidcsv::Document &doc);
-        double calc_freq(const Eigen::MatrixXd &data);
+    Eigen::Vector3d gw_{0,0,-9.81};
+    Eigen::Vector3d prev_gs_{0,0,0};
 
-        std::optional<estimation::Kalman_filter> m_kalman_filter;
+    Eigen::MatrixXd Rfa_;
 
-        Eigen::MatrixXd m_data_accel;
-        Eigen::MatrixXd m_data_wrench;
-        Eigen::MatrixXd m_data_rotation;
+    Eigen::MatrixXd data_accel_, data_wrench_, data_rotation_;
 
-        Eigen::MatrixXd m_identity;
-        Eigen::MatrixXd m_A_k;
-        Eigen::MatrixXd m_B_k;
-        Eigen::MatrixXd m_Q_k;
-        Eigen::MatrixXd m_P_k;
-
-        Eigen::MatrixXd m_H_f;
-        Eigen::MatrixXd m_H_a;
-
-        Eigen::MatrixXd m_R_f;
-        Eigen::MatrixXd m_R_a;
-
-        Eigen::Vector3d m_force_var;
-        Eigen::Vector3d m_torque_var;
-        Eigen::Vector3d m_accel_var;
-
-        Eigen::VectorXd m_V_b_hat;
-
-        Eigen::Vector3d m_r_hat;
-
-        Eigen::Vector3d m_g_s;
-        Eigen::Vector3d m_g_w{0,0,-9.81};
-
-        double comb_avg_freq{};
-
-        double m_m_hat;
-
-        double m_s_a{};
-        double m_s_t{};
-        double m_s_f{};
-        double m_sigma_k{};
+    std::optional<estimation2::Kalman_filter> kf_;
 };
-
 
 
 #endif //FUSION_HPP

@@ -1,6 +1,9 @@
 set(sources
         "Kalman_filter.cpp"
         "Fusion.cpp"
+        "Estimator.cpp"
+        "util.cpp"
+        "Variance.cpp"
 )
 find_path(RAPIDCSV_INCLUDE_DIRS "rapidcsv.h")
 

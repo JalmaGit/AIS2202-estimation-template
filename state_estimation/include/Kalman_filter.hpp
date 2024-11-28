@@ -2,34 +2,31 @@
 #define KALMAN_FILTER_HPP
 
 #include <Eigen/Dense>
+#include <utility>
 
-namespace estimation {
-    class Kalman_filter {
+namespace estimation2 {
+    class Kalman_filter
+    {
     public:
-        explicit Kalman_filter(const Eigen::MatrixXd &A_k, const Eigen::MatrixXd &B_k,
-                               const Eigen::MatrixXd& $H_k, const Eigen::MatrixXd &P_k,
-                               const Eigen::MatrixXd &R_k, const Eigen::MatrixXd &Q_k);
+        Kalman_filter(const Eigen::MatrixXd& A, const Eigen::MatrixXd& B, const Eigen::MatrixXd& P, const Eigen::MatrixXd& Q, const Eigen::MatrixXd& R, const Eigen::MatrixXd& H);
 
-        void init(Eigen::VectorXd &x_hat_k_1, Eigen::MatrixXd &P_k_1);
+        void init(const Eigen::VectorXd& x);;
 
-        void update(Eigen::MatrixXd& H_k, Eigen::MatrixXd& R_k, double d_t);
+        void set_Q (Eigen::MatrixXd& Q);
+        void set_R (Eigen::MatrixXd& R);
+        void set_H (Eigen::MatrixXd& H);
 
-        void prediction_update(Eigen::VectorXd &u_k);
-        void correction_update(Eigen::VectorXd &z_k);
-        Eigen::VectorXd get_kalman_state();
+        void predict(const Eigen::VectorXd &u);;
+        void correct(const Eigen::VectorXd &z);;
+
+        Eigen::VectorXd get_x();
 
     private:
-        Eigen::MatrixXd m_A_k; //System Matrix
-        Eigen::MatrixXd m_B_k; //Input Matrix
-        Eigen::MatrixXd m_H_k; //Output Matrix
-        Eigen::MatrixXd m_P_k; //Covariance Error Estimate
-        Eigen::MatrixXd m_R_k; //White Gaussian Measurement Noise Variance
-        Eigen::MatrixXd m_Q_k; //White Gaussian Process Noise Variance
-        Eigen::MatrixXd m_I; //Identity Matrix, Must be the same size as A_k
+        Eigen::MatrixXd A_, B_, P_, P0_, Q_, R_, H_, I_;
 
-        Eigen::VectorXd m_x_hat_k; //Estimated Kalman State
+        Eigen::VectorXd x_;
 
-        double m_dt;
+
     };
 } // namespace estimation
 
