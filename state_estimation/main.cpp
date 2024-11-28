@@ -19,7 +19,7 @@ int main() {
   //variance.print_data();
 
   std::cout << "\n __________SENSOR FUSION__________" << std::endl;
-  constexpr double s_a{100}, s_f{5000}, s_t{250}, sigma_k{0.5};
+  constexpr double s_a{100}, s_f{250}, s_t{5000}, sigma_k{0.5};
   Fusion fusion = Fusion(estimator.get_m(), estimator.get_r(),variance.get_a(),variance.get_f(), variance.get_t(), estimator.get_fts_bias(), estimator.get_accel_bias());
   fusion.load_data_sets("data/1-baseline_accel.csv","data/1-baseline_wrench.csv", "data/1-baseline_orientations.csv");
   fusion.init(s_a,s_f,s_t, sigma_k);
