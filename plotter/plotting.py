@@ -4,24 +4,34 @@ import pandas as pd
 
 def plot(unbiased, estimate, wrench, experiment):
     plt.rc('text', usetex=False)
-    plt.rc('font', family='serif')
+    plt.rc('font', family='open sans')
 
     fileName = "plots/" + experiment + '_' + "fz" + '.png'
 
-    fig, ax = plt.subplots(figsize=(12, 8))
-    ax.plot(unbiased['time'], unbiased['fz'], label=r"$\mathcal{F}_3$")
-    ax.plot(estimate['time'], estimate['fz'], label=r"$\hat{\mathcal{x}}_6$")
-    ax.plot(wrench['time'], wrench['fz'], label=r"$\hat{\mathcal{z}}_{c,3}$")
+    fig, ax = plt.subplots(figsize=(14, 8))
+    ax.plot(unbiased['time'], unbiased['fz'], label=r"$\mathcal{F}_3$",linewidth=4)
+    ax.plot(estimate['time'], estimate['fz'], label=r"$\hat{\mathcal{x}}_6$",linewidth=4)
+    ax.plot(wrench['time'], wrench['fz'], label=r"$\hat{\mathcal{z}}_{c,3}$", linewidth=4)
+    ax.tick_params(axis='both', which='major', labelsize=20)
+    ax.set_title(experiment.capitalize() + " Force", size=35)
+    ax.set_xlabel("Time (s)", size=30)
+    ax.set_ylabel("Force (N)", size=30)
+    ax.grid(True)
     ax.legend(loc='lower right', prop={'size': 20})
     plt.savefig(fileName, bbox_inches='tight')
     plt.show()
 
     fileName = "plots/" + experiment + '_' + "ty" + '.png'
 
-    fig, ax = plt.subplots(figsize=(12, 8))
-    ax.plot(unbiased['time'], unbiased['ty'], label=r"$\mathcal{T}_2$")
-    ax.plot(estimate['time'], estimate['ty'], label=r"$\hat{\mathcal{x}}_8$")
-    ax.plot(wrench['time'], wrench['ty'], label=r"$\hat{\mathcal{z}}_{c,5}$")
+    fig, ax = plt.subplots(figsize=(14, 8))
+    ax.plot(unbiased['time'], unbiased['ty'], label=r"$\mathcal{T}_2$",linewidth=4)
+    ax.plot(estimate['time'], estimate['ty'], label=r"$\hat{\mathcal{x}}_8$",linewidth=4)
+    ax.plot(wrench['time'], wrench['ty'], label=r"$\hat{\mathcal{z}}_{c,5}$",linewidth=4)
+    ax.tick_params(axis='both', which='major', labelsize=20)
+    ax.set_title(experiment.capitalize() + " Torque", size=35)
+    ax.set_xlabel("Time (s)", size=30)
+    ax.set_ylabel("Torque (Nm)", size=30)
+    ax.grid(True)
     ax.legend(loc='lower right', prop={'size': 20})
     plt.savefig(fileName, bbox_inches='tight')
     plt.show()
