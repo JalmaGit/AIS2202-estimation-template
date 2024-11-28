@@ -277,9 +277,6 @@ void Fusion::csv_writer(const std::vector<double>& time, std::vector<Eigen::Vect
 
     std::cout << "Writing Estimation Data To CSV File..." << std::endl;
 
-    std::cout << data[0](5) << std::endl;
-    std::cout << data[3000](5) << std::endl;
-
     for (int i = 0; i < data[0].rows(); ++i) {
         std::vector<double> columnData;
         for (const auto& vec : data) {
@@ -289,7 +286,7 @@ void Fusion::csv_writer(const std::vector<double>& time, std::vector<Eigen::Vect
 
         doc.InsertColumn(i + 1, columnData, labels[i]);
     }
-    std::cout << "Saving CSV File To " << std::filesystem::current_path() << "..." << std::endl;
+    std::cout << "Saving CSV File To plotter/results" << "..." << std::endl;
     std::string filepath = "../../plotter/results/" + file_name + ".csv";
     doc.Save(filepath);
 }
