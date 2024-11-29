@@ -24,6 +24,7 @@ private:
     Eigen::VectorXd var_a_ = Eigen::VectorXd::Zero(3);
     Eigen::VectorXd var_f_ = Eigen::VectorXd::Zero(3);
     Eigen::VectorXd var_t_ = Eigen::VectorXd::Zero(3);
+    Eigen::MatrixXd Rfa_ = Eigen::MatrixXd::Zero(3,3);
 };
 
 

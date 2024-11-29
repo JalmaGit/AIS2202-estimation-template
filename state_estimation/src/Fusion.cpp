@@ -11,8 +11,8 @@ Fusion::Fusion(const double m_est, const Eigen::VectorXd& r_est, const Eigen::Ve
     init_B(m_est, r_est);
 
     std::cout<<"Init Q and P..."<<std::endl;
-    init_P();
     init_Q(m_est, r_est);
+    init_P();
 
     std::cout<<"Init H matrices..." <<std::endl;
     init_Hf();
@@ -24,7 +24,7 @@ Fusion::Fusion(const double m_est, const Eigen::VectorXd& r_est, const Eigen::Ve
         0, 0, 1,
         -1, 0, 0;
 
-    var_a_ = Rfa_ * (-var_a);
+    var_a_ = var_a;
     var_f_ = var_f;
     var_t_ = var_t;
     accel_bias_ = accel_bias;
@@ -41,7 +41,7 @@ void Fusion::init(double s_a, double s_f, double s_t, double sigma_k)
     ff_ = calc_freq(data_wrench_);
     fr_ = calc_freq(data_rotation_);
 
-    Eigen::VectorXd x_init = Eigen::VectorXd::Zero(9);
+    Eigen::VectorXd x_init = Eigen::VectorXd::Ones(9);
     x_init << data_accel_.row(0)[1], data_accel_.row(0)[2], data_accel_.row(0)[3],
            data_wrench_.row(0)[1], data_wrench_.row(0)[2], data_wrench_.row(0)[3],
            data_wrench_.row(0)[4], data_wrench_.row(0)[5], data_wrench_.row(0)[6];
@@ -106,9 +106,9 @@ void Fusion::load_data_sets(const std::string& accel_file, const std::string& wr
 
 void Fusion::run(const std::string& experiment)
 {
-    std::cout << "Running Fusion v2..." << std::endl;
-    int a_idx = 0;
-    int w_idx = 0;
+    std::cout << "Running Fusion..." << std::endl;
+    int a_idx = 1;
+    int w_idx = 1;
     int r_idx = 0;
 
     double t = 0.0;
@@ -128,7 +128,6 @@ void Fusion::run(const std::string& experiment)
 
     std::vector<Eigen::VectorXd> x_unbiased;
     std::vector<Eigen::VectorXd> x_est;
-    std::vector<Eigen::VectorXd> u_data;
     std::vector<double> time;
 
     std::cout<<"Starting While Loop..."<<std::endl;
@@ -137,7 +136,7 @@ void Fusion::run(const std::string& experiment)
     {
         if (t == data_accel_(a_idx,0))
         {
-            double dt = (t - prev_t)/1000000;
+            double dt = (t-prev_t)/1000000;
             prev_t = t;
 
             a << data_accel_(a_idx,1),data_accel_(a_idx,2),data_accel_(a_idx,3);
@@ -157,7 +156,6 @@ void Fusion::run(const std::string& experiment)
 
             x_est.push_back(kf_->get_x());
             x_unbiased.push_back(x);
-            u_data.push_back(u);
 
             time.push_back(t/1000000);
 
@@ -166,7 +164,7 @@ void Fusion::run(const std::string& experiment)
         }
         if (t == data_wrench_(w_idx,0))
         {
-            double dt = (t - prev_t)/1000000;
+            double dt = (t-prev_t)/1000000;
             prev_t = t;
 
             Eigen::VectorXd z = Eigen::VectorXd::Zero(6);
@@ -187,7 +185,6 @@ void Fusion::run(const std::string& experiment)
 
             x_est.push_back(kf_->get_x());
             x_unbiased.push_back(x);
-            u_data.push_back(u);
 
             time.push_back(t/1000000);
 
@@ -316,7 +313,7 @@ void Fusion::init_B(const double m_est, const Eigen::Vector3d& r_est)
 
 void Fusion::init_P()
 {
-    P0_ = Eigen::MatrixXd::Identity(9, 9);
+    P0_ = 10* Eigen::MatrixXd::Identity(9,9);
 }
 
 void Fusion::init_Q(const double m_est, const Eigen::Vector3d& r_est)

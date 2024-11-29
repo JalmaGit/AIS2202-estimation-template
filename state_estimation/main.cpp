@@ -10,13 +10,13 @@ int main() {
   std::cout << "\n ________Getting Bias________" << std::endl;
   std::string data = "data/0-calibration_fts-accel.csv";
   Estimator estimator(data);
-  //estimator.print_data();
+  estimator.print_data();
 
   std::cout << "\n ________Getting Variance________" << std::endl;
   std::string accel_file = "data/0-steady-state_accel.csv";
   std::string wrench_file = "data/0-steady-state_wrench.csv";
   Variance variance(accel_file, wrench_file);
-  //variance.print_data();
+  variance.print_data();
 
   std::cout << "\n __________SENSOR FUSION__________" << std::endl;
   constexpr double s_a{100}, s_f{250}, s_t{5000}, sigma_k{0.5};

@@ -6,15 +6,35 @@
 
 Variance::Variance(std::string accel_file, std::string wrench_file)
 {
+    Rfa_ << 0, -1, 0,
+        0, 0, 1,
+        -1, 0, 0;
+
     rapidcsv::Document stdy_accel_data(accel_file);
     rapidcsv::Document stdy_wrench_data(wrench_file);
 
     Eigen::MatrixXd accel = csv_to_mat(stdy_accel_data);
     Eigen::MatrixXd force_torque = csv_to_mat(stdy_wrench_data);
 
-    var_a_ << calculate_variance(accel.col(0) * -9.81),
-        calculate_variance(accel.col(1) * -9.81),
-        calculate_variance(accel.col(2) * -9.81);
+    accel.col(0) *= 9.81;
+    accel.col(1) *= 9.81;
+    accel.col(2) *= 9.81;
+
+    for (int i = 0; i < accel.rows(); i++)
+    {
+        Eigen::VectorXd a = Eigen::VectorXd::Zero(3);
+        a << accel.row(i)[0], accel.row(i)[1], accel.row(i)[2];
+
+        a << Rfa_*a;
+
+        accel.row(i)[0] = a.col(0)(0);
+        accel.row(i)[1] = a.col(0)(1);
+        accel.row(i)[2] = a.col(0)(2);
+    }
+
+    var_a_ << calculate_variance(accel.col(0)),
+        calculate_variance(accel.col(1)),
+        calculate_variance(accel.col(2));
 
     var_f_ << calculate_variance(force_torque.col(0)),
         calculate_variance(force_torque.col(1)),
@@ -36,9 +56,9 @@ Eigen::VectorXd Variance::get_t()
 
 void Variance::print_data()
 {
-    std::cout << get_a() <<std::endl;
-    std::cout << get_f() <<std::endl;
-    std::cout << get_t() <<std::endl;
+    std::cout << "accel variance: \n"  << get_a() <<std::endl;
+    std::cout << "force variance: \n"  << get_f() <<std::endl;
+    std::cout << "torque variance: \n"  << get_t() <<std::endl;
 }
 
 double Variance::calculate_variance(const Eigen::VectorXd& data)

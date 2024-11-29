@@ -83,11 +83,11 @@ Eigen::VectorXd Estimator::get_fts_bias() {
 
 void Estimator::print_data()
 {
-  std::cout <<  get_m() << std::endl;
-  std::cout <<  get_r() << std::endl;
-  std::cout <<  get_force_bias().transpose() << std::endl;
-  std::cout <<  get_torque_bias().transpose() << std::endl;
-  std::cout <<  get_accel_bias().transpose() << std::endl;
+  std::cout << "mass estimate: " << get_m() << std::endl;
+  std::cout << "mass center estimate: " << get_r() << std::endl;
+  std::cout << "bias accel: " << get_accel_bias().transpose() << std::endl;
+  std::cout << "bias force: " << get_force_bias().transpose() << std::endl;
+  std::cout << "bias torque: " << get_torque_bias().transpose() << std::endl;
 }
 
 void Estimator::calculate_m() {
