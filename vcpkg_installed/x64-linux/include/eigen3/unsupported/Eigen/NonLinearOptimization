@@ -49,21 +49,21 @@
   * implementation, such as most linear algebra (vectors, matrices, stable norms).
   *
   * Doing so, we were very careful to check the tests we setup at the very
-  * beginning, which ensure that the same results are found.
+  * beginning, which ensure that the same data are found.
   *
   * \section Tests Tests
   * 
   * The tests are placed in the file unsupported/test/NonLinear.cpp.
   * 
   * There are two kinds of tests : those that come from examples bundled with cminpack.
-  * They guaranty we get the same results as the original algorithms (value for 'x',
+  * They guaranty we get the same data as the original algorithms (value for 'x',
   * for the number of evaluations of the function, and for the number of evaluations
   * of the Jacobian if ever).
   * 
   * Other tests were added by myself at the very beginning of the 
-  * process and check the results for Levenberg-Marquardt using the reference data 
+  * process and check the data for Levenberg-Marquardt using the reference data
   * on http://www.itl.nist.gov/div898/strd/nls/nls_main.shtml. Since then i've 
-  * carefully checked that the same results were obtained when modifying the
+  * carefully checked that the same data were obtained when modifying the
   * code. Please note that we do not always get the exact same decimals as they do,
   * but this is ok : they use 128bits float, and we do the tests using the C type 'double',
   * which is 64 bits on most platforms (x86 and amd64, at least).

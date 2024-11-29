@@ -81,7 +81,7 @@ protected:
 };
 
 
-// Specialization of the Solve expression for dense results
+// Specialization of the Solve expression for dense data
 template<typename Decomposition, typename RhsType>
 class SolveImpl<Decomposition,RhsType,Dense>
   : public MatrixBase<Solve<Decomposition,RhsType> >

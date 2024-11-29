@@ -48,7 +48,7 @@ template<> EIGEN_DONT_INLINE Packet4f pasin(Packet4f x)
 //so first compare with half
 
   Packet4f branch_mask= _mm_cmpgt_ps(a, p4f_half);//this is to select which branch to take
-//both will be taken, and finally results will be merged
+//both will be taken, and finally data will be merged
 //the branch for values >0.5
 
     {

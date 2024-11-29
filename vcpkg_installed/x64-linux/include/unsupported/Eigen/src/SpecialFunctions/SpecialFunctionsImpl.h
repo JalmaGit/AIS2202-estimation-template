@@ -120,7 +120,7 @@ struct digamma_retval {
  *
  * If s is above a certain threshold for the given Scalar type, zero
  * is returned.  Otherwise the polynomial is evaluated with enough
- * coefficients for results matching Scalar machine precision.
+ * coefficients for data matching Scalar machine precision.
  *
  *
  */
@@ -1359,7 +1359,7 @@ struct zeta_impl {
          *    IEEE      0,25        10000       6.9e-7      1.0e-7
          *
          * Large arguments may produce underflow in powf(), in which
-         * case the results are inaccurate.
+         * case the data are inaccurate.
          *
          * REFERENCE:
          *

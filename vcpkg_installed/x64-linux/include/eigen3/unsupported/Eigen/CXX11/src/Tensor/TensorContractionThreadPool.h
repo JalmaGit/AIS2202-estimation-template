@@ -1197,7 +1197,7 @@ struct TensorEvaluator<const TensorContractionOp<Indices, LeftArgType, RightArgT
     // ----------------------------------------------------------------------//
     // Algorithm parameters.
 
-    // We will compute partial results into the buffers of this size.
+    // We will compute partial data into the buffers of this size.
     Index buffer_size_bytes;
 
     Index block_size;
@@ -1206,7 +1206,7 @@ struct TensorEvaluator<const TensorContractionOp<Indices, LeftArgType, RightArgT
     // Keep track of pending tasks when evaluate in async mode.
     std::atomic<int> num_pending_blocks;
 
-    // We compute partial gemm results in parallel, and to get the final result
+    // We compute partial gemm data in parallel, and to get the final result
     // we need to add them all together. For the large number of threads (>= 48)
     // this adds a very expensive sequential step at the end.
     //
@@ -1246,7 +1246,7 @@ struct TensorEvaluator<const TensorContractionOp<Indices, LeftArgType, RightArgT
       eigen_assert(v >= 1);
 
       // If we processed the last block of the range, we can aggregate all
-      // partial results into the first block of the range.
+      // partial data into the first block of the range.
       if (v == 1) {
         const Index rng_size = actualRangeSize(l0_ranges, l0_size, l0_index);
         const Index dst_block_idx = l0_index * l0_size;

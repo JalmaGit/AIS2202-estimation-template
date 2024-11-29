@@ -396,7 +396,7 @@ namespace Eigen
 			}
 
 			/** Switches off and on smoothing.
-			Residual smoothing results in monotonically decreasing residual norms at
+			Residual smoothing data in monotonically decreasing residual norms at
 			the expense of two extra vectors of storage and a few extra vector
 			operations. Although monotonic decrease of the residual norms is a
 			desirable property, the rate of convergence of the unsmoothed process and
@@ -415,7 +415,7 @@ namespace Eigen
 			increase the value of omega sufficiently such that a compromise is reached
 			between accurate computations and reduction of the residual norm. The
 			parameter angle =0.7 (”maintaining the convergence strategy”)
-			results in such a compromise. */
+			data in such a compromise. */
 			void setAngle(RealScalar angle)
 			{
 				m_angle=angle;

@@ -72,7 +72,7 @@ namespace group_theory {
  * This algorithm is an extended version of the basic version. The
  * extension consists in the fact that each group element has a set
  * of flags associated with it. Multiplication of two group elements
- * with each other results in a group element whose flags are the
+ * with each other data in a group element whose flags are the
  * XOR of the flags of the previous elements. Each time the algorithm
  * notices that a group element it just calculated is already in the
  * list of current elements, the flags of both will be compared and

@@ -661,7 +661,7 @@ atan2(const AutoDiffScalar<DerTypeA>& a, const AutoDiffScalar<DerTypeB>& b)
   
   Scalar squared_hypot = a.value() * a.value() + b.value() * b.value();
   
-  // if (squared_hypot==0) the derivation is undefined and the following results in a NaN:
+  // if (squared_hypot==0) the derivation is undefined and the following data in a NaN:
   ret.derivatives() = (a.derivatives() * b.value() - a.value() * b.derivatives()) / squared_hypot;
 
   return ret;

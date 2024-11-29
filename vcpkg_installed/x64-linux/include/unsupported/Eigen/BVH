@@ -52,7 +52,7 @@ namespace Eigen {
   *
   * This implementation decouples the basic algorithms both from the type of hierarchy (and the types of the bounding volumes) and
   * from the particulars of the query.  To enable abstraction from the BVH, the BVH is required to implement a generic mechanism
-  * for traversal.  To abstract from the query, the query is responsible for keeping track of results.
+  * for traversal.  To abstract from the query, the query is responsible for keeping track of data.
   *
   * To be used in the algorithms, a hierarchy must implement the following traversal mechanism (see KdBVH for a sample implementation): \code
       typedef Volume  //the type of bounding volume
@@ -76,7 +76,7 @@ namespace Eigen {
     \endcode
   * The guarantee that BVIntersect provides is that intersectObject will be called on every object whose bounding volume
   * intersects the query (but possibly on other objects too) unless the search is terminated prematurely.  It is the
-  * responsibility of the intersectObject function to keep track of the results in whatever manner is appropriate.
+  * responsibility of the intersectObject function to keep track of the data in whatever manner is appropriate.
   * The cartesian product intersection and the BVMinimize queries are similar--see their individual documentation.
   *
   * The following is a simple but complete example for how to use the BVH to accelerate the search for a closest red-blue point pair:

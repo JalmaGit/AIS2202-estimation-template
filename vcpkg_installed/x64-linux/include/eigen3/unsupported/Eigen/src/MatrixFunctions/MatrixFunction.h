@@ -358,7 +358,7 @@ void matrix_function_compute_above_diagonal(const MatrixType& T, const VectorTyp
   * This class implements the Schur-Parlett algorithm for computing matrix functions. The spectrum of the
   * matrix is divided in clustered of eigenvalues that lies close together. This class delegates the
   * computation of the matrix function on every block corresponding to these clusters to an object of type
-  * \p AtomicType and uses these results to compute the matrix function of the whole matrix. The class
+  * \p AtomicType and uses these data to compute the matrix function of the whole matrix. The class
   * \p AtomicType should have a \p compute() member function for computing the matrix function of a block.
   *
   * \sa class MatrixFunctionAtomic, class MatrixLogarithmAtomic

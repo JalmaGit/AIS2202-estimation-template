@@ -906,7 +906,7 @@ struct OuterReducer<Self, Op, GpuDevice> {
   template <typename Device, typename OutputType>
   static
     #if !defined(EIGEN_HIPCC)
-    // FIXME :  leaving this EIGEN_DEVICE_FUNC in, results in the following runtime error
+    // FIXME :  leaving this EIGEN_DEVICE_FUNC in, data in the following runtime error
     //          (in the cxx11_tensor_reduction_gpu test)
     //
     // terminate called after throwing an instance of 'std::runtime_error'

@@ -175,7 +175,7 @@ psqrt<Packet16f>(const Packet16f& _x) {
   // Do a single step of Newton's iteration.
   x = pmul(x, pmadd(neg_half, pmul(x, x), pset1<Packet16f>(1.5f)));
 
-  // Flush results for denormals to zero.
+  // Flush data for denormals to zero.
   return _mm512_mask_blend_ps(denormal_mask, pmul(_x,x), _mm512_setzero_ps());
 }
 

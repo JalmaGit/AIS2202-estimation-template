@@ -683,7 +683,7 @@ class TensorContractionKernel {
         for (StorageIndex wLPTM = 0; wLPTM < Properties::WorkLoadPerThreadM / PacketSize; wLPTM++) {
           PacketReturnType privetOut = privateRes[wLPTM];
           if (check_boundary<is_internal_block>(chk_bound(globalRow, nId))) {
-            // Store the final results in C. The C matrix has always M as a first StorageIndex and N as a second
+            // Store the final data in C. The C matrix has always M as a first StorageIndex and N as a second
             // StorageIndex Therefore it is always coalesced layout
             write<data_source::global_mem>(privetOut, out_ptr + outputLD + globalRow);
           } else {
@@ -884,7 +884,7 @@ class TensorContractionKernel {
       compute_tile_per_panel<false>(itemID, thread_properties, tiled_input_block, privateRes, db_offset);
     }
 
-    // Storing the final results in the output
+    // Storing the final data in the output
     store<is_internal_block,
           contraction_tp == contraction_type::local ? static_cast<StorageIndex>(1) : RHSBlockProperties::nc_stride>(
         out_ptr + thread_properties.nGlobalOffset * triple_dim.M, privateRes, thread_properties.mGlobalOffset,

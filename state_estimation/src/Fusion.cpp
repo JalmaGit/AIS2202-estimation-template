@@ -33,7 +33,7 @@ Fusion::Fusion(const double m_est, const Eigen::VectorXd& r_est, const Eigen::Ve
 
 void Fusion::init(double s_a, double s_f, double s_t, double sigma_k)
 {
-    std::cout << "Init R and matrices..."<<std::endl;
+    std::cout << "Init R matrices..."<<std::endl;
     init_Rf(s_f, s_t);
     init_Ra(s_a);
 
@@ -41,7 +41,7 @@ void Fusion::init(double s_a, double s_f, double s_t, double sigma_k)
     ff_ = calc_freq(data_wrench_);
     fr_ = calc_freq(data_rotation_);
 
-    Eigen::VectorXd x_init = Eigen::VectorXd::Ones(9);
+    Eigen::VectorXd x_init = Eigen::VectorXd::Zero(9);
     x_init << data_accel_.row(0)[1], data_accel_.row(0)[2], data_accel_.row(0)[3],
            data_wrench_.row(0)[1], data_wrench_.row(0)[2], data_wrench_.row(0)[3],
            data_wrench_.row(0)[4], data_wrench_.row(0)[5], data_wrench_.row(0)[6];
@@ -60,12 +60,12 @@ void Fusion::load_data_sets(const std::string& accel_file, const std::string& wr
     rapidcsv::Document raw_data_accel(accel_file);
     data_accel_ = csv_to_mat(raw_data_accel);
 
-    //Scaling For Gravity
+    std::cout << "Scaling for gravity..." << std::endl;
     data_accel_.col(1) *= -9.81;
     data_accel_.col(2) *= -9.81;
     data_accel_.col(3) *= -9.81;
 
-    //rotating the data
+    std::cout << "Rotating the IMU to the same frame as FTS..." << std::endl;
     for (int i = 0; i < data_accel_.rows(); i++)
     {
         Eigen::VectorXd a = Eigen::VectorXd::Zero(3);
@@ -78,7 +78,7 @@ void Fusion::load_data_sets(const std::string& accel_file, const std::string& wr
         data_accel_.row(i)[3] = a.col(0)(2);
     }
 
-    //Removing Bias
+    std::cout << "Removing IMU Bias" << std::endl;
     for (int i = 1; i < data_accel_.cols(); ++i) {
         for (int j = 0; j < data_accel_.rows(); ++j) {
             data_accel_.row(j)[i] -= accel_bias_(i - 1, 0);
@@ -88,7 +88,7 @@ void Fusion::load_data_sets(const std::string& accel_file, const std::string& wr
     rapidcsv::Document raw_data_wrench(wrench_file);
     data_wrench_ = csv_to_mat(raw_data_wrench);
 
-    //Removing the FTS bias from the dataset
+    std::cout << "Removing FTS Bias..." << std::endl;
     for (int i = 1; i < data_wrench_.cols(); ++i) {
         for (int j = 0; j < data_wrench_.rows(); ++j) {
             data_wrench_.row(j)[i] -= fts_bias_(i - 1, 0);
@@ -121,13 +121,6 @@ void Fusion::load_data_sets(const std::string& accel_file, const std::string& wr
 void Fusion::run(const std::string& experiment)
 {
     std::cout << "Running Fusion..." << std::endl;
-    int a_idx = 1;
-    int w_idx = 1;
-    int r_idx = 0;
-
-    double t = 0.0;
-    double prev_t = 0.0;
-
     Eigen::VectorXd u = Eigen::VectorXd::Zero(3);
     Eigen::VectorXd x = Eigen::VectorXd::Zero(9);
 
@@ -138,6 +131,13 @@ void Fusion::run(const std::string& experiment)
 
     V << data_wrench_(0,1), data_wrench_(0,2), data_wrench_(0,3),
     data_wrench_(0,4), data_wrench_(0,5), data_wrench_(0,6);
+
+    int a_idx = 1;
+    int w_idx = 1;
+    int r_idx = 0;
+
+    double t = 0.0;
+    double prev_t = 0.0;
 
     std::vector<Eigen::VectorXd> x_unbiased;
     std::vector<Eigen::VectorXd> x_est;
@@ -304,8 +304,8 @@ void Fusion::csv_writer(const std::vector<double>& time, std::vector<Eigen::Vect
 
         doc.InsertColumn(i + 1, columnData, labels[i]);
     }
-    std::cout << "Saving CSV File To plotter/results" << "..." << std::endl;
-    std::string filepath = "../../plotter/results/" + file_name + ".csv";
+    std::cout << "Saving CSV File To results/data" << "..." << std::endl;
+    std::string filepath = "../../results/data/" + file_name + ".csv";
     doc.Save(filepath);
 }
 

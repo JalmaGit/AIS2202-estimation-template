@@ -384,7 +384,7 @@ EigenContractionKernelInternal(const LhsMapper lhs, const RhsMapper rhs,
   } // end loop over k
 
   // we've now iterated over all of the large (ie width 64) k blocks and
-  // accumulated results in registers. At this point thread (x, y, z) contains
+  // accumulated data in registers. At this point thread (x, y, z) contains
   // the sum across all big k blocks of the product of little k block of index (x, y)
   // with block of index (y, z). To compute the final output, we need to reduce
   // the 8 threads over y by summation.
@@ -737,10 +737,10 @@ EigenFloatContractionKernelInternal16x16(const LhsMapper lhs, const RhsMapper rh
     /*
     int ncols_rem = fminf(n_size- horiz_base, 4);
     for (int i = 0; i < ncols_rem; i++) {
-      output(lhs_vert, horiz_base + i) = results[i].x;
-      output(lhs_vert + 1, horiz_base + i) = results[i].y;
-      output(lhs_vert + 2, horiz_base + i) = results[i].z;
-      output(lhs_vert + 3, horiz_base + i) = results[i].w;
+      output(lhs_vert, horiz_base + i) = data[i].x;
+      output(lhs_vert + 1, horiz_base + i) = data[i].y;
+      output(lhs_vert + 2, horiz_base + i) = data[i].z;
+      output(lhs_vert + 3, horiz_base + i) = data[i].w;
     }*/
     for (int i = 0; i < 4; i++) {
       if (horiz_base+i < n_size) {

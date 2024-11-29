@@ -140,21 +140,21 @@ def plot(unbiased, estimate, wrench, experiment):
 
 
 
-baseline_estimate = pd.read_csv('results/baseline_estimate.csv')
-baseline_unbiased = pd.read_csv('results/baseline_unbiased.csv')
-baseline_wrench = pd.read_csv('results/baseline_cont_wrench.csv')
+baseline_estimate = pd.read_csv('data/baseline_estimate.csv')
+baseline_unbiased = pd.read_csv('data/baseline_unbiased.csv')
+baseline_wrench = pd.read_csv('data/baseline_cont_wrench.csv')
 
 plot(baseline_unbiased, baseline_estimate, baseline_wrench, "baseline")
 
-vibrations_estimate = pd.read_csv('results/vibrations_estimate.csv')
-vibrations_unbiased = pd.read_csv('results/vibrations_unbiased.csv')
-vibrations_wrench = pd.read_csv('results/vibrations_cont_wrench.csv')
+vibrations_estimate = pd.read_csv('data/vibrations_estimate.csv')
+vibrations_unbiased = pd.read_csv('data/vibrations_unbiased.csv')
+vibrations_wrench = pd.read_csv('data/vibrations_cont_wrench.csv')
 
 plot(vibrations_unbiased, vibrations_estimate, vibrations_wrench, "vibrations")
 
-contact_estimate = pd.read_csv('results/contact_estimate.csv')
-contact_unbiased = pd.read_csv('results/contact_unbiased.csv')
-contact_wrench = pd.read_csv('results/contact_cont_wrench.csv')
+contact_estimate = pd.read_csv('data/contact_estimate.csv')
+contact_unbiased = pd.read_csv('data/contact_unbiased.csv')
+contact_wrench = pd.read_csv('data/contact_cont_wrench.csv')
 
 plot(contact_unbiased, contact_estimate, contact_wrench, "contact")
 
