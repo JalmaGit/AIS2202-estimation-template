@@ -6,6 +6,10 @@
 Estimator::Estimator(std::string &file_path) {
   rapidcsv::Document data(file_path);
 
+  Rfa_ << 0, -1, 0,
+    0, 0, 1,
+    -1, 0, 0;
+
   populate(data);
   calculate_biases();
   calculate_m();
@@ -45,7 +49,7 @@ void Estimator::calculate_biases() {
 
   for (int i = 0; i < num_rows; i++) {
     force_sum += force_all_.segment<3>(i * 3);
-    accel_sum += gravity_all_.segment<3>(i * 3);
+    accel_sum += accel_all_.segment<3>(i * 3);
   }
   double tx = 0;
   double ty = 0;
@@ -73,7 +77,7 @@ Eigen::VectorXd Estimator::get_torque_bias()
 }
 Eigen::VectorXd Estimator::get_accel_bias()
 {
-  return accel_bias_;
+  return Rfa_*accel_bias_*-9.81;
 }
 Eigen::VectorXd Estimator::get_fts_bias() {
   Eigen::VectorXd fts_bias = Eigen::VectorXd::Zero(6);

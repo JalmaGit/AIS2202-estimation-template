@@ -31,6 +31,8 @@ private:
   Eigen::Vector3d accel_bias_;
   Eigen::VectorXd r_est_;
 
+  Eigen::MatrixXd Rfa_ = Eigen::MatrixXd::Zero(3,3);
+
   float m_est_{};
 };
 

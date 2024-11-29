@@ -16,9 +16,9 @@ Variance::Variance(std::string accel_file, std::string wrench_file)
     Eigen::MatrixXd accel = csv_to_mat(stdy_accel_data);
     Eigen::MatrixXd force_torque = csv_to_mat(stdy_wrench_data);
 
-    accel.col(0) *= 9.81;
-    accel.col(1) *= 9.81;
-    accel.col(2) *= 9.81;
+    accel.col(0) *= -9.81;
+    accel.col(1) *= -9.81;
+    accel.col(2) *= -9.81;
 
     for (int i = 0; i < accel.rows(); i++)
     {

@@ -65,6 +65,20 @@ void Fusion::load_data_sets(const std::string& accel_file, const std::string& wr
     data_accel_.col(2) *= -9.81;
     data_accel_.col(3) *= -9.81;
 
+    //rotating the data
+    for (int i = 0; i < data_accel_.rows(); i++)
+    {
+        Eigen::VectorXd a = Eigen::VectorXd::Zero(3);
+        a << data_accel_.row(i)[1], data_accel_.row(i)[2], data_accel_.row(i)[3];
+
+        a << Rfa_*a;
+
+        data_accel_.row(i)[1] = a.col(0)(0);
+        data_accel_.row(i)[2] = a.col(0)(1);
+        data_accel_.row(i)[3] = a.col(0)(2);
+    }
+
+    //Removing Bias
     for (int i = 1; i < data_accel_.cols(); ++i) {
         for (int j = 0; j < data_accel_.rows(); ++j) {
             data_accel_.row(j)[i] -= accel_bias_(i - 1, 0);
@@ -121,7 +135,6 @@ void Fusion::run(const std::string& experiment)
     Eigen::VectorXd a = Eigen::VectorXd::Zero(3);
 
     a << data_accel_(0,1),data_accel_(0,2),data_accel_(0,3);
-    a = Rfa_ * a;
 
     V << data_wrench_(0,1), data_wrench_(0,2), data_wrench_(0,3),
     data_wrench_(0,4), data_wrench_(0,5), data_wrench_(0,6);
@@ -140,7 +153,6 @@ void Fusion::run(const std::string& experiment)
             prev_t = t;
 
             a << data_accel_(a_idx,1),data_accel_(a_idx,2),data_accel_(a_idx,3);
-            a = Rfa_ * a;
 
             Eigen::VectorXd z = Eigen::VectorXd::Zero(3);
             z << a;
