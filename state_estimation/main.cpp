@@ -19,19 +19,19 @@ int main() {
   variance.print_data();
 
   std::cout << "\n __________SENSOR FUSION__________" << std::endl;
-  constexpr double s_a{100}, s_f{250}, s_t{5000}, sigma_k{0.5};
+  constexpr double s_a{40}, s_f{400}, s_t{4000}, sigma_k{0.5};
   Fusion fusion = Fusion(estimator.get_m(), estimator.get_r(),variance.get_a(),variance.get_f(), variance.get_t(), estimator.get_fts_bias(), estimator.get_accel_bias());
   fusion.load_data_sets("data/1-baseline_accel.csv","data/1-baseline_wrench.csv", "data/1-baseline_orientations.csv");
   fusion.init(s_a,s_f,s_t, sigma_k);
-  fusion.run("baseline");
+  fusion.run("baseline_high");
 
   fusion.load_data_sets("data/2-vibrations_accel.csv","data/2-vibrations_wrench.csv", "data/2-vibrations_orientations.csv");
   fusion.init(s_a,s_f,s_t, sigma_k);
-  fusion.run("vibrations");
+  fusion.run("vibrations_high");
 
   fusion.load_data_sets("data/3-vibrations-contact_accel.csv","data/3-vibrations-contact_wrench.csv", "data/3-vibrations-contact_orientations.csv");
   fusion.init(s_a,s_f,s_t, sigma_k);
-  fusion.run("contact");
+  fusion.run("contact_high");
 
   return 0;
 }
