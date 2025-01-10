@@ -153,7 +153,6 @@ void Fusion::run(const std::string& experiment)
             prev_t = t;
 
             a << data_accel_(a_idx,1),data_accel_(a_idx,2),data_accel_(a_idx,3);
-
             Eigen::VectorXd z = Eigen::VectorXd::Zero(3);
             z << a;
 
